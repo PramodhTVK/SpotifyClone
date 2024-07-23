@@ -193,4 +193,30 @@ body{
 
 .songList ul li{
     list-style-type: decimal;
+    display: flex;
+    gap: 34px;
+    padding: 12px 0px;
+    margin: 12px;
+}
+
+.songListItem{
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid white;
+    border-radius: 3px;
+}
+
+.playNow{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.seekbar{
+    height: 2px;
+    width: 100%;
+    border: 2px solid red;
 }
