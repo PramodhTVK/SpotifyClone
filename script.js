@@ -1,6 +1,7 @@
-const songNames = ["Arp-Space","Collidescope","Morax Unlocked","Movie Tickets","Hey","Summer","Ukulele","Acoustic Electronic","Drop Play","Random Thoughts","Trygve Larsen"]
+const songNames = ["Arp-Space","Collidescope","Morax Unlocked","Movie Tickets","Hey","Summer","Ukulele","Acoustic Electronic","Drop Play","Random Thoughts","Trygve Larsen"];
 const nowPlaying = new Audio();
 let isPlaying = false;
+let firstHit = 0;
 let currID = 0;
 const playBtn = document.getElementById("play");
 const nextBtn = document.getElementById("next");
@@ -57,25 +58,38 @@ async function main() {
                 ele.querySelector("img").src = "images/pause.svg";
                 playBtn.setAttribute("src","images/pause.svg");
                 currID = ele.id;
+                firstHit = 1;
             }
             else if(isPlaying && currID === ele.id){
                 nowPlaying.pause();
                 ele.querySelector("img").src = "images/play.svg";
                 playBtn.setAttribute("src","images/play.svg");
                 isPlaying = false;
+                firstHit = 0;
             }
-            else{
+            else if(!isPlaying && !firstHit && currID !== ele.id){
                 const audio = new Audio(songs[ele.id]);
                 ele.querySelector("img").src = "images/pause.svg";
                 playBtn.setAttribute("src","images/pause.svg");
                 currID = ele.id;
                 playMusic(audio);
+                firstHit = 1;
+            }
+            else{
+                nowPlaying.play();
+                ele.querySelector("img").src = "images/pause.svg";
+                playBtn.setAttribute("src","images/pause.svg");
+                isPlaying = true;
             }
 
         })
     }
 
     nextBtn.addEventListener("click",() => {
+        const currDiv = document.getElementById(currID);
+        const child = currDiv.querySelector("img");
+        child.src = "images/play.svg";
+
         if(currID < songNames.length - 1){
             const audio = new Audio(songs[currID + 1]);
             playMusic(audio);
@@ -87,10 +101,19 @@ async function main() {
             currID = 0;
         }
 
+        const newDiv = document.getElementById(currID);
+        const newChild = newDiv.querySelector("img");
+        newChild.src = "images/pause.svg";
+
+        firstHit = 1;
         playBtn.setAttribute("src","images/pause.svg");
     })
 
     prevBtn.addEventListener("click",() => {
+        const currDiv = document.getElementById(currID);
+        const child = currDiv.querySelector("img");
+        child.src = "images/play.svg";
+
         if(currID > 0){
             const audio = new Audio(songs[currID - 1]);
             playMusic(audio);
@@ -102,26 +125,44 @@ async function main() {
             currID = songs.length - 1;
         }
 
+        const newDiv = document.getElementById(currID);
+        const newChild = newDiv.querySelector("img");
+        newChild.src = "images/pause.svg";
+
+        firstHit = 1;
         playBtn.setAttribute("src","images/pause.svg");
     })
 
     playBtn.addEventListener("click",() => {
+        const currDiv = document.getElementById(currID);
+        const child = currDiv.querySelector("img");
+
         if(isPlaying){
             nowPlaying.pause();
             playBtn.setAttribute("src","images/play.svg");
+            child.src = "images/play.svg";
             isPlaying = false;
+            firstHit = 0;
         }
+        else if(!isPlaying && !firstHit){
+            nowPlaying.play();
+            playBtn.setAttribute("src","images/pause.svg");
+            child.src = "images/pause.svg";
+            isPlaying = true;
+        } 
         else{
             const audio = new Audio(songs[currID]);
             playMusic(audio);
             playBtn.setAttribute("src","images/pause.svg");
+            child.src = "images/pause.svg";
             isPlaying = true;
+            firstHit = 1;
         }
     })
 
 }
 
-console.log(document.getElementById(2));
+
 
 const playMusic = (audio) => {
     nowPlaying.src = audio.src;
