@@ -189,6 +189,15 @@ body{
     border-radius: 30px;
 }
 
+.songbuttons {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px; /* Adjust the gap as needed */
+}
+
+
 .songbuttons img{
     cursor: pointer;
 }
@@ -233,8 +242,8 @@ body{
     background: black;
     border-radius: 10px;
     position: absolute;
-    bottom: 5px;
-    margin: 6px;
+    bottom: 1px;
+    margin: 12px;
     cursor: pointer;
 }
 
@@ -246,4 +255,23 @@ body{
     position: relative;
     bottom: 11px;
     transition: left 0.5s;
+}
+
+.topPanel{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
+    width: 100%;
+    position: relative;
+}
+
+.songinfo{
+    color: black;
+    padding: 0px 20px;
+}
+
+.songtime{
+    color: black;
+    padding: 0px 20px;
 }

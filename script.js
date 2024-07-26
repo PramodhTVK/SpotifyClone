@@ -45,6 +45,8 @@ async function main() {
     });
 
     const libraryContainer = document.querySelector(".songList").getElementsByClassName("playNow");
+    const songName = document.querySelector(".topPanel").getElementsByClassName("songinfo")[0];
+    const songDuration = document.querySelector(".topPanel").getElementsByClassName("songtime")[0];
 
     for(let ele of libraryContainer){
         ele.addEventListener("click",() => {
@@ -58,6 +60,7 @@ async function main() {
                 ele.querySelector("img").src = "images/pause.svg";
                 playBtn.setAttribute("src","images/pause.svg");
                 currID = ele.id;
+                updateSongInfo(songName,songDuration);
                 firstHit = 1;
             }
             else if(isPlaying && currID === ele.id){
@@ -72,6 +75,7 @@ async function main() {
                 ele.querySelector("img").src = "images/pause.svg";
                 playBtn.setAttribute("src","images/pause.svg");
                 currID = ele.id;
+                updateSongInfo(songName,songDuration);
                 playMusic(audio);
                 firstHit = 1;
             }
@@ -104,6 +108,7 @@ async function main() {
         const newDiv = document.getElementById(currID);
         const newChild = newDiv.querySelector("img");
         newChild.src = "images/pause.svg";
+        updateSongInfo(songName,songDuration);
 
         firstHit = 1;
         playBtn.setAttribute("src","images/pause.svg");
@@ -128,6 +133,7 @@ async function main() {
         const newDiv = document.getElementById(currID);
         const newChild = newDiv.querySelector("img");
         newChild.src = "images/pause.svg";
+        updateSongInfo(songName,songDuration);
 
         firstHit = 1;
         playBtn.setAttribute("src","images/pause.svg");
@@ -160,9 +166,25 @@ async function main() {
         }
     })
 
+    nowPlaying.addEventListener("timeupdate", () => {
+        const duration = nowPlaying.duration;
+        const currentTime = nowPlaying.currentTime;
+        
+        const minutes = Math.floor(currentTime / 60).toString().padStart(2, '0');
+        const seconds = Math.floor(currentTime % 60).toString().padStart(2, '0');
+        
+        const totalMinutes = Math.floor(duration / 60).toString().padStart(2, '0');
+        const totalSeconds = Math.floor(duration % 60).toString().padStart(2, '0');
+        
+        songDuration.innerHTML = `${minutes}:${seconds} / ${totalMinutes}:${totalSeconds}`;
+    });
+    
 }
 
-
+const updateSongInfo = (songName,songDuration) => {
+    songName.innerHTML = songNames[currID];
+    songDuration.innerHTML = "00:00 / 00:00";
+}
 
 const playMusic = (audio) => {
     nowPlaying.src = audio.src;
