@@ -2,7 +2,7 @@ const songNames = ["Arp-Space","Collidescope","Morax Unlocked","Movie Tickets","
 const nowPlaying = new Audio();
 let isPlaying = false;
 let firstHit = 0;
-let currID = 0;
+let currID = -1;
 const playBtn = document.getElementById("play");
 const nextBtn = document.getElementById("next");
 const prevBtn = document.getElementById("previous");
@@ -47,10 +47,12 @@ async function main() {
     const libraryContainer = document.querySelector(".songList").getElementsByClassName("playNow");
     const songName = document.querySelector(".topPanel").getElementsByClassName("songinfo")[0];
     const songDuration = document.querySelector(".topPanel").getElementsByClassName("songtime")[0];
+    const seekbar = document.querySelector(".seekbar");
 
     for(let ele of libraryContainer){
         ele.addEventListener("click",() => {
-            if(isPlaying && currID !== ele.id){
+            console.log(ele.id);
+            if(isPlaying && currID !== parseInt(ele.id)){
                 nowPlaying.pause();
                 const audio = new Audio(songs[ele.id]);
                 playMusic(audio);
@@ -59,24 +61,30 @@ async function main() {
                 prevDiv.querySelector("img").src = "images/play.svg";
                 ele.querySelector("img").src = "images/pause.svg";
                 playBtn.setAttribute("src","images/pause.svg");
-                currID = ele.id;
+                currID =parseInt(ele.id);
                 updateSongInfo(songName,songDuration);
+                seekbar.style.opacity = 1;
+                seekbar.style.cursor = "pointer";
+                const circle = document.querySelector(".circle");
                 firstHit = 1;
             }
-            else if(isPlaying && currID === ele.id){
+            else if(isPlaying && currID === parseInt(ele.id)){
                 nowPlaying.pause();
                 ele.querySelector("img").src = "images/play.svg";
                 playBtn.setAttribute("src","images/play.svg");
                 isPlaying = false;
                 firstHit = 0;
             }
-            else if(!isPlaying && !firstHit && currID !== ele.id){
+            else if(!isPlaying && !firstHit && currID !== parseInt(ele.id)){
                 const audio = new Audio(songs[ele.id]);
                 ele.querySelector("img").src = "images/pause.svg";
                 playBtn.setAttribute("src","images/pause.svg");
-                currID = ele.id;
+                currID = parseInt(ele.id);
                 updateSongInfo(songName,songDuration);
                 playMusic(audio);
+                const circle = document.querySelector(".circle");
+                seekbar.style.opacity = 1;
+                seekbar.style.cursor = "pointer";
                 firstHit = 1;
             }
             else{
@@ -90,6 +98,7 @@ async function main() {
     }
 
     nextBtn.addEventListener("click",() => {
+        console.log(currID);
         const currDiv = document.getElementById(currID);
         const child = currDiv.querySelector("img");
         child.src = "images/play.svg";
@@ -105,6 +114,7 @@ async function main() {
             currID = 0;
         }
 
+        const circle = document.querySelector(".circle");
         const newDiv = document.getElementById(currID);
         const newChild = newDiv.querySelector("img");
         newChild.src = "images/pause.svg";
@@ -130,6 +140,7 @@ async function main() {
             currID = songs.length - 1;
         }
 
+        const circle = document.querySelector(".circle");
         const newDiv = document.getElementById(currID);
         const newChild = newDiv.querySelector("img");
         newChild.src = "images/pause.svg";
@@ -169,16 +180,58 @@ async function main() {
     nowPlaying.addEventListener("timeupdate", () => {
         const duration = nowPlaying.duration;
         const currentTime = nowPlaying.currentTime;
+
+        if (isNaN(duration)) {
+            songDuration.innerHTML = "00:00 / 00:00";
+            return;
+        }
         
         const minutes = Math.floor(currentTime / 60).toString().padStart(2, '0');
         const seconds = Math.floor(currentTime % 60).toString().padStart(2, '0');
         
         const totalMinutes = Math.floor(duration / 60).toString().padStart(2, '0');
         const totalSeconds = Math.floor(duration % 60).toString().padStart(2, '0');
+
+        const circle = document.querySelector(".circle");
         
         songDuration.innerHTML = `${minutes}:${seconds} / ${totalMinutes}:${totalSeconds}`;
+        circle.style.left = (currentTime / duration) * 100 + "%";
+    });
+
+    nowPlaying.addEventListener("ended", () => {
+        const currDiv = document.getElementById(currID);
+        const child = currDiv.querySelector("img");
+        child.src = "images/play.svg";
+
+        if(currID < songNames.length - 1){
+            const audio = new Audio(songs[currID + 1]);
+            playMusic(audio);
+            currID = currID + 1;
+        }
+        else{
+            const audio = new Audio(songs[0]);
+            playMusic(audio);
+            currID = 0;
+        }
+
+        const circle = document.querySelector(".circle");
+        const newDiv = document.getElementById(currID);
+        const newChild = newDiv.querySelector("img");
+        newChild.src = "images/pause.svg";
+        updateSongInfo(songName,songDuration);
+
+        firstHit = 1;
+        playBtn.setAttribute("src","images/pause.svg");
     });
     
+    
+    seekbar.addEventListener("click", (e) => {
+        const offSet = e.offsetX;
+        const totalWidth = e.target.getBoundingClientRect().width;
+        const percentage = (offSet / totalWidth) * 100;
+        document.querySelector(".circle").style.left = percentage + "%";
+        nowPlaying.currentTime = (percentage / 100) * nowPlaying.duration;
+    });
 }
 
 const updateSongInfo = (songName,songDuration) => {

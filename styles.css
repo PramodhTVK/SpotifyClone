@@ -93,7 +93,7 @@ body{
 }
 
 .card{
-    width: 250px;
+    width: 200px;
     border-radius: 5px;
     padding: 10px;
     background-color: #252525;
@@ -111,7 +111,7 @@ body{
     background-color: #1ed760;
     position: absolute;
     right: 20px;
-    top: 220px;
+    top: 170px;
     opacity: 0;
     transition: all 0.1s ease-out;
     cursor: pointer;
@@ -119,12 +119,11 @@ body{
 
 .card:hover .play {
     opacity: 1;
-    top: 210px;
+    top: 160px;
 }
 
 .play:hover{
     opacity: 1;
-    top: 210px;
     width: 45px;
     height: 45px;
 }
@@ -202,6 +201,12 @@ body{
     cursor: pointer;
 }
 
+.songList {
+    height: 544px;
+    overflow: auto;
+    margin-bottom: 44px;
+}
+
 .songList ul{
     padding: 0 12px;
 }
@@ -231,6 +236,10 @@ body{
     gap: 20px;
 }
 
+.info{
+    text-align: center;
+}
+
 .playNow:hover{
     background-color: rgb(34, 34, 34);
     border-radius: 40px;
@@ -244,17 +253,18 @@ body{
     position: absolute;
     bottom: 1px;
     margin: 12px;
-    cursor: pointer;
+    opacity: 0;
 }
 
 .circle{
-    width: 23px;
-    height: 23px;
-    border-radius: 13px;
+    width: 15px;
+    height: 15px;
+    border-radius: 10px;
     background-color: black;
     position: relative;
-    bottom: 11px;
-    transition: left 0.5s;
+    bottom: 6px;
+    left: 0%;
+    transition: left 0.1s;
 }
 
 .topPanel{
